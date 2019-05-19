@@ -1,0 +1,20 @@
+{
+  "name": "Whatsapp monitor",
+  "description": "tell when anyone is online",
+  "version": "1.0",
+  "manifest_version": 2,
+  "content_scripts": [
+    {
+      "matches": [
+        "https://web.whatsapp.com/",
+        "http://web.whatsapp.com/"
+      ],
+      "js": [
+        "content-script.js"
+      ]
+    }
+  ],
+  "web_accessible_resources": [
+    "alarm.mp3"
+  ]
+}
