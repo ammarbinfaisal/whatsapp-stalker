@@ -10,7 +10,7 @@ window.addEventListener('keydown', eventListener);
 const alarm = new Audio(chrome.runtime.getURL('alarm.mp3'));
 
 function observe() {
-    console.log('going to wait for the target is online');
+    console.log('going to wait for the target to get online');
 
     setInterval(() => {
         const $info = document.getElementsByClassName('O90ur')[0];
