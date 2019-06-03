@@ -1,46 +1,57 @@
 let paused = true;
-const alarm = new Audio(chrome.runtime.getURL('alarm.mp3'));
+const alarm = new Audio(chrome.runtime.getURL("alarm.mp3"));
 
 const eventListener = event => {
-    if (event.which === 192 && event.ctrlKey && !event.shiftKey) {
-        observe();
-        paused = false;
-        window.removeEventListener('keydown', eventListener);
-    }
-}
+  if (event.which === 192 && event.ctrlKey && !event.shiftKey) {
+    observe();
+    paused = false;
+    window.removeEventListener("keydown", eventListener);
+  }
+};
 
-window.addEventListener('keydown', eventListener);
-window.addEventListener('keydown', event => {
-    if (event.which === 192 && event.ctrlKey && event.shiftKey) {
-        if (paused) {
-            paused = false;
-            alert('resumed');
-        } else {
-            paused = true;
-            alarm.pause();
-            alert('paused');
-        }
+window.addEventListener("keydown", eventListener);
+window.addEventListener("keydown", event => {
+  if (event.which === 192 && event.ctrlKey && event.shiftKey) {
+    if (paused) {
+      paused = false;
+      alert("resumed");
+    } else {
+      paused = true;
+      alarm.pause();
+      alert("paused");
     }
+  }
 });
 
-
 function observe() {
-    console.log('going to wait for the target to get online');
-
-    const monitor = () => {
-        const $info = document.getElementsByClassName('O90ur')[0];
-        if ($info) {
-            if ($info.textContent.trim() === 'online') {
-                alarm.play();
-                console.log("get online man");
-            } else {
-                alarm.pause();
-            }
+  console.log("going to wait for the target to get online");
+  let loggedState = false;
+  const monitor = () => {
+    const $info = document.querySelector("#main > header");
+    const d = new Date();
+    if ($info) {
+      if ($info.textContent.indexOf("online") > -1) {
+        alarm.play();
+        if (!loggedState) {
+          loggedState = true;
+          console.log(
+            `target is online at -> ${d.getHours()}:${d.getMinutes()}:${d.getSeconds()}`
+          );
         }
-    }
+      } else {
+        if (loggedState) {
+          loggedState = false;
+          console.log(
+            `target went offline at -> ${d.getHours()}:${d.getMinutes()}:${d.getSeconds()}`
+          );
+        }
 
-    setInterval(() => {
-        if (!paused)
-            monitor();
-    }, 1500);
+        alarm.pause();
+      }
+    }
+  };
+
+  setInterval(() => {
+    if (!paused) monitor();
+  }, 1500);
 }
